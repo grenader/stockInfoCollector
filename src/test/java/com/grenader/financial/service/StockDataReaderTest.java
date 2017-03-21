@@ -1,15 +1,18 @@
-package com.grenader.financial;
+package com.grenader.financial.service;
 
 import com.grenader.financial.model.Stock;
-import com.grenader.financial.service.StockDataReader;
-import com.grenader.financial.service.StockWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class StockInfoCollectorTest {
+/**
+ * Created by ikanshyn on 2017-03-20.
+ */
+public class StockDataReaderTest {
+
+
     private WebDriver driver;
 
     private StockDataReader reader = new StockDataReader();
