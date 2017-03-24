@@ -15,15 +15,21 @@ public class Stock {
     private String marketCap;
     private double forward_p_e;
     private double priceToBook;
-    private double[] pricePerYears;
-    private double[] dividendsPerYears;
     private double[] dividendsPerStock;
+    private double[] dividendsGrowth;
+
+    private double[] returnPerYears;
+    private double[] dividendsPerYears;
+    private double[] totalReturnPerYear;
+
     private double[] operationalIncome;
     private double[] netIncome;
     private double payoutRatioLastYear;
     private double payoutRatioTTM;
     private double[] operCashFlow;
     private double[] interestExpense;
+    private double[] returnOnEquity;
+    private String sectorName;
 
     public Stock(String stockName, String stockTicker) {
         this.stockName = stockName;
@@ -80,8 +86,8 @@ public class Stock {
         return priceToBook;
     }
 
-    public double[] getPricePerYears() {
-        return pricePerYears;
+    public double[] getReturnPerYears() {
+        return returnPerYears;
     }
 
     public double[] getDividendsPerYears() {
@@ -92,16 +98,45 @@ public class Stock {
         return dividendsPerStock;
     }
 
-    public void setPricePerYears(double[] pricePerYears) {
-        this.pricePerYears = pricePerYears;
+    public void setReturnPerYears(double[] returnPerYears) {
+        updateTotalReturn(returnPerYears, dividendsPerYears);
+        this.returnPerYears = returnPerYears;
     }
 
     public void setDividendsPerYears(double[] dividendsPerYears) {
+        updateTotalReturn(returnPerYears, dividendsPerYears);
         this.dividendsPerYears = dividendsPerYears;
+    }
+
+    private void updateTotalReturn(double[] returnPerYears, double[] dividendsPerYears) {
+        if (returnPerYears == null || dividendsPerYears == null)
+            return;
+        totalReturnPerYear = new double[dividendsPerYears.length];
+        for (int ii = 0; ii < dividendsPerYears.length; ii++)
+            totalReturnPerYear[ii] = returnPerYears[ii]+dividendsPerYears[ii];
     }
 
     public void setDividendsPerStock(double[] dividendsPerStock) {
         this.dividendsPerStock = dividendsPerStock;
+
+        dividendsGrowth = calculateAverageGrowthRate(this.dividendsPerStock, false);
+        System.out.println("dividendsGrowth = " + Arrays.toString(dividendsGrowth));
+    }
+
+     double[] calculateAverageGrowthRate(double[] sequence, boolean skipTTM) {
+        if (sequence == null)
+            return null;
+
+        int shortCut = 1;
+        if (skipTTM)
+            shortCut = 2;
+
+        double[] growthSequence = new double[sequence.length-shortCut];
+
+        // calculate growth per year
+        for (int ii = 0; ii < sequence.length-shortCut; ii++)
+            growthSequence[ii] = (sequence[ii+1] - sequence[ii])/ Math.abs(sequence[ii]);
+        return growthSequence;
     }
 
 
@@ -115,10 +150,41 @@ public class Stock {
 
     public void setNetIncome(double[] netIncome) {
         this.netIncome = netIncome;
+
+
+
     }
 
     public double[] getNetIncome() {
         return netIncome;
+    }
+
+    public double getAverageNetIncomeGrowth() {
+        double[] averageGrowthRate = calculateAverageGrowthRate(netIncome, true);
+        if (averageGrowthRate == null)
+            return -1;
+        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+    }
+
+    public double getAverageOperationalIncomeGrowth() {
+        double[] averageGrowthRate = calculateAverageGrowthRate(operationalIncome, true);
+        if (averageGrowthRate == null)
+            return -1;
+        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+    }
+
+    public double getAverageReturnOnEquityGrowth() {
+        double[] averageGrowthRate = calculateAverageGrowthRate(returnOnEquity, true);
+        if (averageGrowthRate == null)
+            return -1;
+        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+    }
+
+    public double getAverageOperationalCashFlowGrowth() {
+        double[] averageGrowthRate = calculateAverageGrowthRate(operCashFlow, true);
+        if (averageGrowthRate == null)
+            return -1;
+        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
     }
 
     public void setPayoutRatioLastYear(double payoutRatioLastYear) {
@@ -145,6 +211,47 @@ public class Stock {
         return operCashFlow;
     }
 
+    public void setInterestExpense(double[] interestExpense) {
+        this.interestExpense = interestExpense;
+    }
+
+    public double[] getInterestExpense() {
+        return interestExpense;
+    }
+
+    public void setReturnOnEquity(double[] returnOnEquity) {
+        this.returnOnEquity = returnOnEquity;
+    }
+
+    public double[] getReturnOnEquity() {
+        return returnOnEquity;
+    }
+
+    public double getAverageROE3Years() {
+        if (returnOnEquity == null)
+            return -1d;
+        return Arrays.stream(returnOnEquity).skip(returnOnEquity.length - 3).average().getAsDouble();
+    }
+
+    public double getDebtCoverageRatio() {
+        if (netIncome == null || interestExpense == null)
+            return -1d;
+
+        return netIncome[netIncome.length-1] / interestExpense[interestExpense.length-1];
+    }
+
+    public double[] getDividendsGrowth() {
+        return dividendsGrowth;
+    }
+
+    public double[] getTotalReturnPerYear() {
+        return totalReturnPerYear;
+    }
+
+    public double getAverageDividendsGrowth() {
+        return Arrays.stream(dividendsGrowth).average().getAsDouble();
+    }
+
     @Override
     public String toString() {
         return "Stock{" +
@@ -153,27 +260,33 @@ public class Stock {
                 ", lastPrice=" + lastPrice +
                 ", openPrice=" + openPrice +
                 ", yield=" + yield +
+                ", getAverageDividendsGrowth=" + getAverageDividendsGrowth() +
+                ", getDebtCoverageRatio=" + getDebtCoverageRatio() +
+                ", getAverageROE3Years=" + getAverageROE3Years() +
                 ", isReinvestment='" + isReinvestment + '\'' +
                 ", marketCap='" + marketCap + '\'' +
                 ", forward_p_e=" + forward_p_e +
                 ", priceToBook=" + priceToBook +
-                ", pricePerYears=" + Arrays.toString(pricePerYears) +
+                ", returnPerYears=" + Arrays.toString(returnPerYears) +
                 ", dividendsPerYears=" + Arrays.toString(dividendsPerYears) +
+                ", getTotalReturnPerYear=" + Arrays.toString(totalReturnPerYear) +
                 ", dividendsPerStock=" + Arrays.toString(dividendsPerStock) +
+                ", dividendsGrowth=" + Arrays.toString(dividendsGrowth) +
                 ", operationalIncome=" + Arrays.toString(operationalIncome) +
                 ", netIncome=" + Arrays.toString(netIncome) +
                 ", payoutRatioLastYear=" + payoutRatioLastYear +
                 ", payoutRatioTTM=" + payoutRatioTTM +
                 ", operCashFlow=" + Arrays.toString(operCashFlow) +
                 ", interestExpense=" + Arrays.toString(interestExpense) +
+                ", returnOnEquity=" + Arrays.toString(returnOnEquity) +
                 '}';
     }
 
-    public void setInterestExpense(double[] interestExpense) {
-        this.interestExpense = interestExpense;
+    public void setSectorName(String sectorName) {
+        this.sectorName = sectorName;
     }
 
-    public double[] getInterestExpense() {
-        return interestExpense;
+    public String getSectorName() {
+        return sectorName;
     }
 }

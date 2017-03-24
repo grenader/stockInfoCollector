@@ -76,7 +76,7 @@ public class StockDataReader {
     void loadPerformanceInformation(WebDriver driver, Stock stock) throws InterruptedException
     {
         driver.findElement(By.linkText("Performance")).click();
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
         double[] pricePerYears = new double[11];
         for (int i = 0; i < 11; i++) {
@@ -85,7 +85,7 @@ public class StockDataReader {
             pricePerYears[i] = getDouble(priceValue);
         }
         System.out.println("pricePerYears = " + Arrays.toString(pricePerYears));
-        stock.setPricePerYears(pricePerYears);
+        stock.setReturnPerYears(pricePerYears);
 
         double[] dividendsPerYears = new double[10];
         for (int i = 0; i < 10; i++) {
@@ -95,6 +95,11 @@ public class StockDataReader {
         }
         System.out.println("dividendsPerYears = " + Arrays.toString(dividendsPerYears));
         stock.setDividendsPerYears(dividendsPerYears);
+
+        String sector = driver.findElement(By.xpath("//div[@id='chart_container']/table/tbody/tr[2]/th")).getText();
+        System.out.println("sector = " + sector);
+        stock.setSectorName(sector);
+
 
         // Click on Dividend tab
         driver.findElement(By.linkText("Dividend & Splits")).click();
@@ -170,6 +175,10 @@ public class StockDataReader {
                 "//div[@id='financials']/table/tbody/tr[22]/td[", 11);
         stock.setOperCashFlow(operCashFlow);
 
+        double[] returnOnEquity = readStatLine(driver, "returnOnEquity",
+                "//div[@id='tab-profitability']/table[2]/tbody/tr[12]/td[", 11);
+        stock.setReturnOnEquity(returnOnEquity);
+
     }
 
     private double[] readStatLine(WebDriver driver, String sequenceName, String reqExp, int length) {
@@ -186,6 +195,8 @@ public class StockDataReader {
 
     private double getDouble(String str) {
         str = str.replaceAll("%", "").replaceAll(",", "").replaceAll("—", "0");
+        if (str.isEmpty())
+            return -1;
         return Double.parseDouble(str);
     }
 
