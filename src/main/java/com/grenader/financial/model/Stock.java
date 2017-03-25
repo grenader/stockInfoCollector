@@ -30,6 +30,7 @@ public class Stock {
     private double[] interestExpense;
     private double[] returnOnEquity;
     private String sectorName;
+    private double[] revenue;
 
     public Stock(String stockName, String stockTicker) {
         this.stockName = stockName;
@@ -134,8 +135,12 @@ public class Stock {
         double[] growthSequence = new double[sequence.length-shortCut];
 
         // calculate growth per year
-        for (int ii = 0; ii < sequence.length-shortCut; ii++)
-            growthSequence[ii] = (sequence[ii+1] - sequence[ii])/ Math.abs(sequence[ii]);
+        for (int ii = 0; ii < sequence.length-shortCut; ii++) {
+            if (sequence[ii + 1] == -1 || sequence[ii] == -1)
+                growthSequence[ii] = -1;
+            else
+                growthSequence[ii] = (sequence[ii + 1] - sequence[ii]) / Math.abs(sequence[ii]);
+        }
         return growthSequence;
     }
 
@@ -150,9 +155,6 @@ public class Stock {
 
     public void setNetIncome(double[] netIncome) {
         this.netIncome = netIncome;
-
-
-
     }
 
     public double[] getNetIncome() {
@@ -161,30 +163,33 @@ public class Stock {
 
     public double getAverageNetIncomeGrowth() {
         double[] averageGrowthRate = calculateAverageGrowthRate(netIncome, true);
-        if (averageGrowthRate == null)
-            return -1;
-        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+        return getFiveYearsAverage(averageGrowthRate);
+    }
+
+    public double getAverageRevenueGrowth() {
+        double[] averageGrowthRate = calculateAverageGrowthRate(revenue, true);
+        return getFiveYearsAverage(averageGrowthRate);
     }
 
     public double getAverageOperationalIncomeGrowth() {
         double[] averageGrowthRate = calculateAverageGrowthRate(operationalIncome, true);
-        if (averageGrowthRate == null)
-            return -1;
-        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+        return getFiveYearsAverage(averageGrowthRate);
     }
 
     public double getAverageReturnOnEquityGrowth() {
         double[] averageGrowthRate = calculateAverageGrowthRate(returnOnEquity, true);
-        if (averageGrowthRate == null)
-            return -1;
-        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+        return getFiveYearsAverage(averageGrowthRate);
     }
 
     public double getAverageOperationalCashFlowGrowth() {
         double[] averageGrowthRate = calculateAverageGrowthRate(operCashFlow, true);
+        return getFiveYearsAverage(averageGrowthRate);
+    }
+
+    double getFiveYearsAverage(double[] averageGrowthRate) {
         if (averageGrowthRate == null)
             return -1;
-        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).average().getAsDouble();
+        return Arrays.stream(averageGrowthRate).skip(averageGrowthRate.length - 4).filter(i -> i != -1).average().getAsDouble();
     }
 
     public void setPayoutRatioLastYear(double payoutRatioLastYear) {
@@ -235,6 +240,8 @@ public class Stock {
 
     public double getDebtCoverageRatio() {
         if (netIncome == null || interestExpense == null)
+            return -1d;
+        if (netIncome[netIncome.length-1] == -1 || interestExpense[interestExpense.length-1]  == -1 )
             return -1d;
 
         return netIncome[netIncome.length-1] / interestExpense[interestExpense.length-1];
@@ -288,5 +295,13 @@ public class Stock {
 
     public String getSectorName() {
         return sectorName;
+    }
+
+    public void setRevenue(double[] revenue) {
+        this.revenue = revenue;
+    }
+
+    public double[] getRevenue() {
+        return revenue;
     }
 }

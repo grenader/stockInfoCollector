@@ -4,10 +4,10 @@ import com.grenader.financial.model.Stock;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 /**
  * Created by ikanshyn on 2017-03-20.
@@ -24,6 +24,8 @@ public class StockDataReader {
         // launch Fire fox and direct it to the Base URL
         driver.get(baseUrl);
         Thread.sleep(2000);
+        waitForText(driver, "News & Events");
+        Thread.sleep(500);
 
         // get the actual value of the title
         actualTitle = driver.getTitle();
@@ -66,17 +68,13 @@ public class StockDataReader {
         // Loading performance information
         loadPerformanceInformation(driver, stock);
 
-        // Write results:
-        ArrayList<Stock> listBook = new ArrayList<Stock>();
-        listBook.add(stock);
-
         return stock;
     }
 
     void loadPerformanceInformation(WebDriver driver, Stock stock) throws InterruptedException
     {
         driver.findElement(By.linkText("Performance")).click();
-        Thread.sleep(5000);
+        waitForText(driver, "Trailing Total Returns");
 
         double[] pricePerYears = new double[11];
         for (int i = 0; i < 11; i++) {
@@ -103,8 +101,7 @@ public class StockDataReader {
 
         // Click on Dividend tab
         driver.findElement(By.linkText("Dividend & Splits")).click();
-        Thread.sleep(2000);
-
+        waitForText(driver, "Upcoming Dividends");
 
         double[] dividendsPerStock = new double[5];
         for (int i = 0; i < 5; i++) {
@@ -121,13 +118,13 @@ public class StockDataReader {
     {
 
         driver.findElement(By.linkText("Financials")).click();
-        Thread.sleep(4000);
-
+        waitForText(driver, "Income Statement");
+        Thread.sleep(900);
 
         WebElement groupNameToTest = null;
         try {
             groupNameToTest = driver.findElement(By.xpath("//*[contains(text(), 'Interest expense')]"));
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (groupNameToTest != null) // link is there
@@ -139,7 +136,7 @@ public class StockDataReader {
             String sectionId = getSectionId(section_label_id);
             System.out.println("sectionId = " + sectionId);
 
-            double[] interestExpense = readStatLine(driver, "operationalIncome",
+            double[] interestExpense = readStatLine(driver, "interestExpense",
                     "//div[@id='"+sectionId+"']/div[", 6);
             stock.setInterestExpense(interestExpense);
         }
@@ -153,7 +150,11 @@ public class StockDataReader {
     void loadKeyStatsInformation(WebDriver driver, Stock stock) throws InterruptedException
     {
         driver.findElement(By.linkText("Key Stats")).click();
-        Thread.sleep(4000);
+        waitForText(driver, "Key Ratios");
+
+        double[] revenue = readStatLine(driver, "revenue",
+                "//div[@id='financials']/table/tbody/tr[2]/td[", 11);
+        stock.setRevenue(revenue);
 
         double[] operationalIncomes = readStatLine(driver, "operationalIncome",
                 "//div[@id='financials']/table/tbody/tr[6]/td[", 11);
@@ -179,6 +180,12 @@ public class StockDataReader {
                 "//div[@id='tab-profitability']/table[2]/tbody/tr[12]/td[", 11);
         stock.setReturnOnEquity(returnOnEquity);
 
+    }
+
+    private void waitForText(WebDriver driver, String text) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 5000);
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), '" + text + "')]"))); //
+        Thread.sleep(500);
     }
 
     private double[] readStatLine(WebDriver driver, String sequenceName, String reqExp, int length) {

@@ -49,13 +49,66 @@ public class StockTest {
     }
 
     @Test
-    public void testCalculateAverageGrowthRate() {
+    public void testCalculateAverageGrowthRate_steady() {
         Stock stock = new Stock("Name", "ticker");
 
-        double[] rate = new double[] {-20, -40, -20, 0, 20, 40, 80};
+        double[] rate = new double[]{10, 15, 15 * 1.5, 15 * 1.5 * 1.5, 15 * 1.5 * 1.5 * 1.5};
         double[] growth = stock.calculateAverageGrowthRate(rate, false);
 
-        double[] expected = new double[] { -1.0, 0.5, 1.0, Double.POSITIVE_INFINITY, 1.0, 1.0};
+        double[] expected = new double[]{0.5, 0.5, 0.5, 0.5};
         assertArrayEquals(expected, growth, 0.0001);
+    }
+
+    @Test
+    public void testCalculateAverageGrowthRate_gap() {
+        Stock stock = new Stock("Name", "ticker");
+
+        double[] rate = new double[]{-1, 15, 15 * 1.5, 15 * 1.5 * 1.5, 15 * 1.5 * 1.5 * 1.5};
+        double[] growth = stock.calculateAverageGrowthRate(rate, false);
+
+        double[] expected = new double[]{-1, 0.5, 0.5, 0.5};
+        assertArrayEquals(expected, growth, 0.0001);
+    }
+
+    @Test
+    public void testCalculateAverageGrowthRate_middleGap() {
+        Stock stock = new Stock("Name", "ticker");
+
+        double[] rate = new double[]{10 / 1.5, 10, -1, 15, 15 * 1.5, 15 * 1.5 * 1.5, 15 * 1.5 * 1.5 * 1.5};
+        double[] growth = stock.calculateAverageGrowthRate(rate, false);
+
+        double[] expected = new double[]{0.5, -1, -1, 0.5, 0.5, 0.5};
+        assertArrayEquals(expected, growth, 0.0001);
+    }
+
+    @Test
+    public void testCalculateAverageGrowthRate_negative() {
+        Stock stock = new Stock("Name", "ticker");
+
+        double[] rate = new double[]{-20, -40, -20, 0, 20, 40, 80};
+        double[] growth = stock.calculateAverageGrowthRate(rate, false);
+
+        double[] expected = new double[]{-1.0, 0.5, 1.0, Double.POSITIVE_INFINITY, 1.0, 1.0};
+        assertArrayEquals(expected, growth, 0.0001);
+    }
+
+    @Test
+    public void testGetFiveYearsAverage_ordinary() {
+        Stock stock = new Stock("Name", "ticker");
+
+        double[] rate = new double[]{10, 10, 20, 20};
+
+        stock.getFiveYearsAverage(rate);
+        assertEquals(15, stock.getFiveYearsAverage(rate), 0.0001);
+    }
+
+    @Test
+    public void testGetFiveYearsAverage_skipSome() {
+        Stock stock = new Stock("Name", "ticker");
+
+        double[] rate = new double[]{10, -1, -1, 20};
+
+        stock.getFiveYearsAverage(rate);
+        assertEquals(15, stock.getFiveYearsAverage(rate), 0.0001);
     }
 }

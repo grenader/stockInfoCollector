@@ -33,10 +33,8 @@ public class StockWriter {
     }
 
     public void writeToExcel(List<Stock> listBook, String excelFilePath) throws IOException {
-
         int rowCount = 0;
-        Row headerRow = sheet.createRow(++rowCount);
-//        writeHeader(row);
+        Row headerRow = sheet.createRow(rowCount);
         for (Stock aBook : listBook) {
             Row row = sheet.createRow(++rowCount);
             writeAStock(aBook, headerRow, row);
@@ -162,6 +160,19 @@ public class StockWriter {
         // just an empty cell
         writeHeaderCell(headerRow, columnIndex, "");
         row.createCell(columnIndex++).setCellValue("");
+        if (stock.getRevenue() != null) {
+            int ii = NEXT_YEAR - 10;
+            for (double div : stock.getRevenue()) {
+                writeHeaderCell(headerRow, columnIndex, "Revenue, " + ii++);
+                columnIndex = writeNumberCell(row, columnIndex, div);
+            }
+        }
+        writeHeaderCell(headerRow, columnIndex, "Average Revenue Growth, 5 year");
+        columnIndex = writePercentCell(row, columnIndex, stock.getAverageRevenueGrowth());
+
+        // just an empty cell
+        writeHeaderCell(headerRow, columnIndex, "");
+        row.createCell(columnIndex++).setCellValue("");
         if (stock.getOperationalIncome() != null) {
             int ii = NEXT_YEAR - 10;
             for (double div : stock.getOperationalIncome()) {
@@ -195,7 +206,7 @@ public class StockWriter {
                 columnIndex = writeNumberCell(row, columnIndex, div);
             }
         }
-        writeHeaderCell(headerRow, columnIndex, "Average Op Cash Flow Growth, 5 year");
+        writeHeaderCell(headerRow, columnIndex, "Average ROE Growth, 5 year");
         columnIndex = writePercentCell(row, columnIndex, stock.getAverageReturnOnEquityGrowth());
 
         // just an empty cell

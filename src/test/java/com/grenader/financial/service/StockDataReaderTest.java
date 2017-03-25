@@ -11,12 +11,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  * Created by ikanshyn on 2017-03-20.
  */
 public class StockDataReaderTest {
-
-
     private WebDriver driver;
 
     private StockDataReader reader = new StockDataReader();
-    private StockWriter writter = new StockWriter();
 
     @Before
     public void setUp() throws Exception {
