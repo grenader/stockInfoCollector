@@ -59,11 +59,11 @@ public class StockWriter {
         writeHeaderCell(headerRow, columnIndex, "Last Price");
         columnIndex = writeNumberCell(row, columnIndex, stock.getLastPrice());
 
+        writeHeaderCell(headerRow, columnIndex, "Market Cap");
+        row.createCell(columnIndex++).setCellValue(stock.getMarketCap());
+
         writeHeaderCell(headerRow, columnIndex, "Yield, %");
         columnIndex = writePercentCell(row, columnIndex, stock.getYield()/100);
-//                Cell cell1 = row.createCell(columnIndex++);
-//        cell1.setCellValue(stock.getYield());
-//        cell1.setCellStyle(percentStyle);
 
         // Dividend Growth
         writeHeaderCell(headerRow, columnIndex, "Average Div Growth, 4 years, %");
@@ -77,6 +77,12 @@ public class StockWriter {
 
         writeHeaderCell(headerRow, columnIndex, "Is Reinvestment?");
         row.createCell(columnIndex++).setCellValue(stock.getIsReinvestment());
+
+        writeHeaderCell(headerRow, columnIndex, "Forward P/E");
+        row.createCell(columnIndex++).setCellValue(stock.getForwardP_E());
+
+        writeHeaderCell(headerRow, columnIndex, "Price/Cash Flow");
+        row.createCell(columnIndex++).setCellValue(stock.getForwardP_E());
 
         // Average ROE, 3 years, > 13%
         writeHeaderCell(headerRow, columnIndex, "Average ROE, 3 years, > 13%");

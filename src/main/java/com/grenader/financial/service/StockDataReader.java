@@ -57,7 +57,10 @@ public class StockDataReader {
         double priceToBook = getDouble(driver.findElement(By.cssSelector("h3[gkey=PB] ~ span")).getText());
         System.out.println("priceToBook = " + priceToBook);
 
-        Stock stock = new Stock(stockName, stockTicker, lastPrice, openPrice, yield, isReinvestment, marketCap, forward_P_E, priceToBook);
+        double priceToCashFlow = getDouble(driver.findElement(By.cssSelector("span[vkey=PC]")).getText());
+        System.out.println("priceToCashFlow = " + priceToCashFlow);
+
+        Stock stock = new Stock(stockName, stockTicker, lastPrice, openPrice, yield, isReinvestment, marketCap, forward_P_E, priceToBook, priceToCashFlow);
 
         // Loading Key Stats information
         loadFinancialsInformation(driver, stock);
@@ -125,7 +128,9 @@ public class StockDataReader {
         try {
             groupNameToTest = driver.findElement(By.xpath("//*[contains(text(), 'Interest expense')]"));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("'Interest expense' was not found!");
+          //  e.printStackTrace();
+            Thread.sleep(1000);
         }
         if (groupNameToTest != null) // link is there
         {
@@ -185,7 +190,7 @@ public class StockDataReader {
     private void waitForText(WebDriver driver, String text) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, 5000);
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), '" + text + "')]"))); //
-        Thread.sleep(500);
+        Thread.sleep(600);
     }
 
     private double[] readStatLine(WebDriver driver, String sequenceName, String reqExp, int length) {

@@ -4,21 +4,17 @@ import com.grenader.financial.model.Stock;
 import com.grenader.financial.model.TickerPair;
 import com.grenader.financial.service.StockDataReader;
 import com.grenader.financial.service.StockWriter;
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StockInfoCollectorTest {
+public class IndividualStockCollectorServiceTest {
     private WebDriver driver;
 
     private StockDataReader reader = new StockDataReader();
@@ -37,6 +33,12 @@ public class StockInfoCollectorTest {
     }
 
     @Test
+    public void testReadAStock_FTS() throws Exception {
+        Stock stock = reader.readAStock(driver, "FTS", "CAN");
+        writter.writeToExcel(Arrays.asList(stock), "writeReal_FTS.xls");
+    }
+
+    @Test
     public void testReadAStock_CardinalHealth() throws Exception {
         Stock stock = reader.readAStock(driver, " CAH", "USA");
         writter.writeToExcel(Arrays.asList(stock), "writeReal_CAH.xls");
@@ -46,6 +48,12 @@ public class StockInfoCollectorTest {
     public void testReadAStock_MSFT() throws Exception {
         Stock stock = reader.readAStock(driver, "MSFT", "USA");
         writter.writeToExcel(Arrays.asList(stock), "writeReal_MSFT.xls");
+    }
+
+    @Test
+    public void testReadAStock_T_USA() throws Exception {
+        Stock stock = reader.readAStock(driver, "T", "USA");
+        writter.writeToExcel(Arrays.asList(stock), "writeReal_T_USA.xls");
     }
 
     @Test
@@ -115,57 +123,10 @@ public class StockInfoCollectorTest {
             if (stock1 != null)
             list.add(stock1);
         }
-        writter.writeToExcel(list, "res_expertsCADStocks.xls");
+        writter.writeToExcel(list, "res_expertsCADStocks_2.xls");
     }
 
-    @Test
-    public void testReadUSAArictocrats() throws Exception {
-        List<String> tickers = readTickers("/usaAristocrats2017.txt");
 
-        List<TickerPair> tickerToLoad = new ArrayList<TickerPair>();
-
-        for (String ticker : tickers) {
-            tickerToLoad.add(new TickerPair(ticker, "USA"));
-        }
-        System.out.println("tickerToLoad = " + tickerToLoad);
-
-        List<Stock> list = new ArrayList<Stock>();
-        for (TickerPair tickerPair : tickerToLoad) {
-            Stock stock1 = null;
-            try {
-                stock1 = reader.readAStock(driver, tickerPair.getTicker(), tickerPair.getCountryCode());
-            } catch (Exception e) {
-                System.out.println("Error while reading a stock: "+tickerPair);
-                e.printStackTrace();
-            }
-            if (stock1 != null)
-            list.add(stock1);
-        }
-        writter.writeToExcel(list, "res_usaAristocrats2017.xls");
-
-    }
-
-    List<String> readTickers(String resourceFileName) {
-        try {
-
-            URL resource = this.getClass().getResource(resourceFileName);
-            if (resource == null)
-                throw new IllegalArgumentException("Resource file ["+resourceFileName+"] not found!");
-
-            File file = new File(resource.getFile());
-            List<String> lines = FileUtils.readLines(file, "UTF-8");
-
-            System.out.println("Going to read the followint stocks:");
-            for (String line : lines) {
-                System.out.println(line);
-            }
-            return  lines;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @After
     public void tearDown() throws Exception {

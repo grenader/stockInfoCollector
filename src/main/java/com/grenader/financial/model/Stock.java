@@ -13,8 +13,10 @@ public class Stock {
     private double yield;
     private String isReinvestment;
     private String marketCap;
-    private double forward_p_e;
+    private double forwardP_E;
     private double priceToBook;
+    private double priceToCashFlow;
+
     private double[] dividendsPerStock;
     private double[] dividendsGrowth;
 
@@ -37,7 +39,7 @@ public class Stock {
         this.stockTicker = stockTicker;
     }
 
-    public Stock(String stockName, String stockTicker, double lastPrice, double openPrice, double yield, String isReinvestment, String marketCap, double forward_p_e, double priceToBook) {
+    public Stock(String stockName, String stockTicker, double lastPrice, double openPrice, double yield, String isReinvestment, String marketCap, double forwardP_E, double priceToBook, double priceToCashFlow) {
 
         this.stockName = stockName;
         this.stockTicker = stockTicker;
@@ -46,8 +48,9 @@ public class Stock {
         this.yield = yield;
         this.isReinvestment = isReinvestment;
         this.marketCap = marketCap;
-        this.forward_p_e = forward_p_e;
+        this.forwardP_E = forwardP_E;
         this.priceToBook = priceToBook;
+        this.priceToCashFlow = priceToCashFlow;
     }
 
 
@@ -79,8 +82,8 @@ public class Stock {
         return marketCap;
     }
 
-    public double getForward_p_e() {
-        return forward_p_e;
+    public double getForwardP_E() {
+        return forwardP_E;
     }
 
     public double getPriceToBook() {
@@ -270,15 +273,20 @@ public class Stock {
                 ", getAverageDividendsGrowth=" + getAverageDividendsGrowth() +
                 ", getDebtCoverageRatio=" + getDebtCoverageRatio() +
                 ", getAverageROE3Years=" + getAverageROE3Years() +
+                ", getAverageNetIncomeGrowth=" + getAverageNetIncomeGrowth() +
+                ", getAverageOperationalIncomeGrowth=" + getAverageOperationalIncomeGrowth() +
+                ", getAverageRevenueGrowth=" + getAverageRevenueGrowth() +
+                ", getAverageOperationalCashFlowGrowth=" + getAverageOperationalCashFlowGrowth() +
                 ", isReinvestment='" + isReinvestment + '\'' +
                 ", marketCap='" + marketCap + '\'' +
-                ", forward_p_e=" + forward_p_e +
+                ", forwardP_E=" + forwardP_E +
                 ", priceToBook=" + priceToBook +
-                ", returnPerYears=" + Arrays.toString(returnPerYears) +
-                ", dividendsPerYears=" + Arrays.toString(dividendsPerYears) +
-                ", getTotalReturnPerYear=" + Arrays.toString(totalReturnPerYear) +
+                ", priceToCashFlow=" + priceToCashFlow +
                 ", dividendsPerStock=" + Arrays.toString(dividendsPerStock) +
                 ", dividendsGrowth=" + Arrays.toString(dividendsGrowth) +
+                ", returnPerYears=" + Arrays.toString(returnPerYears) +
+                ", dividendsPerYears=" + Arrays.toString(dividendsPerYears) +
+                ", totalReturnPerYear=" + Arrays.toString(totalReturnPerYear) +
                 ", operationalIncome=" + Arrays.toString(operationalIncome) +
                 ", netIncome=" + Arrays.toString(netIncome) +
                 ", payoutRatioLastYear=" + payoutRatioLastYear +
@@ -286,6 +294,8 @@ public class Stock {
                 ", operCashFlow=" + Arrays.toString(operCashFlow) +
                 ", interestExpense=" + Arrays.toString(interestExpense) +
                 ", returnOnEquity=" + Arrays.toString(returnOnEquity) +
+                ", sectorName='" + sectorName + '\'' +
+                ", revenue=" + Arrays.toString(revenue) +
                 '}';
     }
 
@@ -303,5 +313,9 @@ public class Stock {
 
     public double[] getRevenue() {
         return revenue;
+    }
+
+    public double getPriceToCashFlow() {
+        return priceToCashFlow;
     }
 }

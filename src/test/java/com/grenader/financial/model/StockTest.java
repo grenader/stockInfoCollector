@@ -41,7 +41,7 @@ public class StockTest {
 
     @Test
     public void testDividendsGrowth() throws Exception {
-        Stock stock1 = new Stock("Test Stock Name 1", "ST1", 101, 102, 4.4, "Yes", "123 ml", 14.1, 11.1);
+        Stock stock1 = new Stock("Test Stock Name 1", "ST1", 101, 102, 4.4, "Yes", "123 ml", 14.1, 11.1, 13.6);
         stock1.setDividendsPerStock(new double[]{3.1, 3.3, 3.5, 3.7, 3.8});
 
         System.out.println("stock1 = " + Arrays.toString(stock1.getDividendsGrowth()));

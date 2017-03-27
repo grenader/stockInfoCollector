@@ -37,14 +37,14 @@ public class StockWriterTest {
     public void testWriteToExcel_full() throws Exception {
         ArrayList<Stock> stocks = new ArrayList<Stock>();
 
-        Stock stock1 = new Stock("Test Stock Name 1", "ST1", 101, 102, 4.4, "Yes", "123 ml", 14.1, 11.1);
+        Stock stock1 = new Stock("Test Stock Name 1", "ST1", 101, 102, 4.4, "Yes", "123 ml", 14.1, 11.1, 10.3);
         stock1.setDividendsPerStock(new double[]{3.142, 3.373, 3.58, 3.749, 3.8501});
         stock1.setReturnPerYears(new double[]{90, 95.1, 100.3, 105.6, 106.7, 110.8, 90, 95.1, 100.3, 105.6, 106.7});
         stock1.setDividendsPerYears(new double[]{5.78, 6.32, 7.41, 8.34, 9.7, 5.23, 6.87, 7.37, 8.70, 9.32});
         stock1.setNetIncome(new double[]{5.78, 6.32, 7.41, 8.34, 9.7, 5.23, 6.87, 7.37, 8.70, 9.32, 11.34});
         stock1.setOperationalIncome(new double[]{5.78, 6.32, 7.41, 8.34, 9.7, 5.23, 6.87, 7.37, 8.70, 9.32, 11.34});
         stocks.add(stock1);
-        Stock stock2 = new Stock("Test Stock Name 2", "ST2", 201, 202, 3.4, "No", "321 ml", 11.1, 7.1);
+        Stock stock2 = new Stock("Test Stock Name 2", "ST2", 201, 202, 3.4, "No", "321 ml", 11.1, 7.1, 6.3);
         stock2.setDividendsPerStock(new double[]{4.1, 4.3, 4.5, 4.7, 4.8});
         stock2.setReturnPerYears(new double[]{190, 195.1, 200.3, 205.6, 206.7, 210.8, 190, 195.1, 200.3, 205.6, 206.7});
         stock2.setDividendsPerYears(new double[]{15, 16, 17, 18, 19, 15, 16, 17, 18, 19});
