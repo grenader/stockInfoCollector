@@ -78,6 +78,9 @@ public class StockDataReader {
     {
         driver.findElement(By.linkText("Performance")).click();
         waitForText(driver, "Trailing Total Returns");
+        waitForText(driver, "Dividend Yield %");
+
+//        Thread.sleep(500);
 
         double[] pricePerYears = new double[11];
         for (int i = 0; i < 11; i++) {

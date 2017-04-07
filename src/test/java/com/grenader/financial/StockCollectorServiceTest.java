@@ -25,7 +25,7 @@ public class StockCollectorServiceTest {
 
     @Test
     public void testReadTop10CanadianDividendStocksMarch2017() throws Exception {
-        service.collect("/top10CanadianDividendStocksMarch2017.txt", "res_top10CanadianDividendStocksMarch2017.xls");
+        service.collect("/top10CanadianDividendStocksMarch2017.txt", "res_top10CanadianDividendStocksMarch2017-2.xls");
     }
 
     @Test
@@ -36,6 +36,26 @@ public class StockCollectorServiceTest {
     @Test
     public void testReadMoneysenseBestDividendAllStars2016() throws Exception {
         service.collect("/moneysenseBestDividendAllStars2016.txt", "res_moneysenseBestDividendAllStars2016.xls");
+    }
+
+    @Test
+    public void testReadDividentSnapshotCanada2017() throws Exception {
+        service.collect("/dividentSnapshotCanada2017.txt", "res_dividentSnapshotCanada2017.xls");
+    }
+
+    @Test
+    public void testReadSemiconductorStocksFromEFTs() throws Exception {
+        service.collect("/semiconductorStocks.txt", "res_semiconductorStocksFromEFT.xls");
+    }
+
+    @Test
+    public void testReadSemiconductorEFTs() throws Exception {
+        service.collect("/semiconductorETFs.txt", "res_semiconductorEFTs.xls");
+    }
+
+    @Test
+    public void testReadCanadianREIT() throws Exception {
+        service.collect("/canadianREIT.txt", "res_canadianREIT.xls");
     }
 
 }

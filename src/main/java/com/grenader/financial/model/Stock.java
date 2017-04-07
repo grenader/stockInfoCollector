@@ -116,8 +116,10 @@ public class Stock {
         if (returnPerYears == null || dividendsPerYears == null)
             return;
         totalReturnPerYear = new double[dividendsPerYears.length];
-        for (int ii = 0; ii < dividendsPerYears.length; ii++)
-            totalReturnPerYear[ii] = returnPerYears[ii]+dividendsPerYears[ii];
+        for (int ii = 0; ii < dividendsPerYears.length; ii++) {
+            // ignore -1 return
+            totalReturnPerYear[ii] = returnPerYears[ii] + (dividendsPerYears[ii] != -1 ? dividendsPerYears[ii] : 0);
+        }
     }
 
     public void setDividendsPerStock(double[] dividendsPerStock) {
@@ -259,6 +261,9 @@ public class Stock {
     }
 
     public double getAverageDividendsGrowth() {
+        if (Arrays.stream(dividendsGrowth).allMatch(v -> v == -1))
+            return 0; // do not calculate average when all the values are -1.
+
         return Arrays.stream(dividendsGrowth).average().getAsDouble();
     }
 

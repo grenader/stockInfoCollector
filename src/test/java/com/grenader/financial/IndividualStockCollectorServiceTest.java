@@ -45,9 +45,21 @@ public class IndividualStockCollectorServiceTest {
     }
 
     @Test
+    public void testReadAStock_Amazon() throws Exception {
+        Stock stock = reader.readAStock(driver, " AMZN", "USA");
+        writter.writeToExcel(Arrays.asList(stock), "writeReal_AMZN.xls");
+    }
+
+    @Test
     public void testReadAStock_MSFT() throws Exception {
         Stock stock = reader.readAStock(driver, "MSFT", "USA");
         writter.writeToExcel(Arrays.asList(stock), "writeReal_MSFT.xls");
+    }
+
+    @Test
+    public void testReadAStock_Broadcom() throws Exception {
+        Stock stock = reader.readAStock(driver, "AVGO", "USA");
+        writter.writeToExcel(Arrays.asList(stock), "writeReal_Broadcom.xls");
     }
 
     @Test

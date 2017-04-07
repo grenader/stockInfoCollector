@@ -61,13 +61,15 @@ public class StockCollectorService {
     }
 
     private List<TickerPair> prepareTickersList(String resourceFileName) {
-        List<String> tickers = readStockPairs(resourceFileName);
+        List<String> lines = readLines(resourceFileName);
         List<TickerPair> tickerToLoad = new ArrayList<>();
 
-        for (String stockIdPair : tickers) {
-            StringTokenizer tokenizer = new StringTokenizer(stockIdPair,",");
+        for (String line : lines) {
+            if (line.isEmpty())
+                continue;
+            StringTokenizer tokenizer = new StringTokenizer(line.trim(),",");
             if (tokenizer.countTokens() != 2)
-                throw new IllegalArgumentException("Incorrect stock line: '"+stockIdPair+"'! Reading was halted!");
+                throw new IllegalArgumentException("Incorrect stock line: '"+line+"'! Reading was halted!");
             tickerToLoad.add(new TickerPair(tokenizer.nextToken(), tokenizer.nextToken()));
         }
         System.out.println("tickerToLoad = " + tickerToLoad);
@@ -75,7 +77,7 @@ public class StockCollectorService {
     }
 
 
-    List<String> readStockPairs(String resourceFileName) {
+    List<String> readLines(String resourceFileName) {
         try {
 
             URL resource = this.getClass().getResource(resourceFileName);
