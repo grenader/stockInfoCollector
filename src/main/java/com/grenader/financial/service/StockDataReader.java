@@ -191,7 +191,7 @@ public class StockDataReader {
     }
 
     private void waitForText(WebDriver driver, String text) throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver, 5000);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), '" + text + "')]"))); //
         Thread.sleep(600);
     }

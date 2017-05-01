@@ -34,6 +34,11 @@ public class StockCollectorServiceTest {
     }
 
     @Test
+    public void testReadDividendEarnerComplete() throws Exception {
+        service.collect("/dividendEarnerComplete.txt", "res_dividendEarnerComplete.xls");
+    }
+
+    @Test
     public void testReadMoneysenseBestDividendAllStars2016() throws Exception {
         service.collect("/moneysenseBestDividendAllStars2016.txt", "res_moneysenseBestDividendAllStars2016.xls");
     }
