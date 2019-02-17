@@ -2,7 +2,6 @@ package com.grenader.financial.service;
 
 import com.grenader.financial.model.Stock;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +79,7 @@ public class StockWriterTest {
 
 
     @Test
-    public void testFormat() throws IOException, InvalidFormatException {
+    public void testFormat() throws IOException {
 
         try{
             FileOutputStream out = new FileOutputStream("dateFormat.xls");
